@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+  dibimbing-dataeng-spark-master:
+    container_name: ${SPARK_MASTER_CONTAINER_NAME}
+    hostname: ${SPARK_MASTER_HOST_NAME}
+    image: dataeng-dibimbing/spark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ../spark-scripts:/spark-scripts
+    ports:
+      - ${SPARK_MASTER_UI}:8080
+      - ${SPARK_MASTER_PORT}:7077
+
+  dibimbing-dataeng-spark-worker-1:
+    &worker_default
+    container_name: ${SPARK_WORKER_CONTAINER_NAME}-1
+    image: dataeng-dibimbing/spark
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://${SPARK_MASTER_HOST_NAME}:${SPARK_MASTER_PORT}
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    volumes:
+      - ../spark-scripts:/spark-scripts
+    depends_on:
+      - dibimbing-dataeng-spark-master
+
+  # dibimbing-dataeng-spark-worker-2:
+  #   <<: *worker_default
+  #   container_name: ${SPARK_WORKER_CONTAINER_NAME}-2
+
+networks:
+  default:
+    name: dataeng-network

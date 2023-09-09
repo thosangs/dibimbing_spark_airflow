@@ -1,0 +1,54 @@
+{
+    "fields": [
+        {
+            "metadata": {},
+            "name": "InvoiceNo",
+            "nullable": true,
+            "unique": true,
+            "type": "string"
+        },
+        {
+            "metadata": {},
+            "name": "StockCode",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {},
+            "name": "Description",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {},
+            "name": "Quantity",
+            "nullable": true,
+            "type": "integer"
+        },
+        {
+            "metadata": {},
+            "name": "InvoiceDate",
+            "nullable": true,
+            "type": "date"
+        },
+        {
+            "metadata": {},
+            "name": "UnitPrice",
+            "nullable": true,
+            "type": "float"
+        },
+        {
+            "metadata": {},
+            "name": "CustomerID",
+            "nullable": true,
+            "type": "string"
+        },
+        {
+            "metadata": {},
+            "name": "Country",
+            "nullable": true,
+            "type": "string"
+        }
+    ],
+    "type": "struct"
+}

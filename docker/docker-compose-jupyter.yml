@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  dibimbing-dataeng-jupyter:
+    container_name: ${JUPYTER_CONTAINER_NAME}
+    hostname: ${JUPYTER_CONTAINER_NAME}
+    image: dataeng-dibimbing/jupyter
+    ports:
+      - ${JUPYTER_PORT}:8888
+      - 4040:4040
+      - 4041:4041
+    volumes:
+      - ../:/resources
+      - ../notebooks:/home/jovyan/
+
+networks:
+  default:
+    name: dataeng-network
