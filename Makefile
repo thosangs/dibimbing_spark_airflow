@@ -57,7 +57,7 @@ spark-submit-test:
 	@docker exec ${SPARK_WORKER_CONTAINER_NAME}-1 \
 		spark-submit \
 		--master spark://${SPARK_MASTER_HOST_NAME}:${SPARK_MASTER_PORT} \
-		/spark-scripts/spark-dag-script.py
+		/spark-scripts/spark-example.py
 
 spark-submit-airflow-test:
 	@docker exec ${AIRFLOW_WEBSERVER_CONTAINER_NAME} \
@@ -65,7 +65,7 @@ spark-submit-airflow-test:
 		--master spark://${SPARK_MASTER_HOST_NAME}:${SPARK_MASTER_PORT} \
 		--conf "spark.standalone.submit.waitAppCompletion=false" \
 		--conf "spark.ui.enabled=false" \
-		/spark-scripts/spark-dag-script.py
+		/spark-scripts/spark-example.py
 
 airflow:
 	@echo '__________________________________________________________'
