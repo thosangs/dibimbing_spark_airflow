@@ -7,6 +7,7 @@ help:
 	@echo "## spark			- Run a Spark cluster, rebuild the postgres container, then create the destination tables "
 	@echo "## jupyter			- Spinup jupyter notebook for testing and validation purposes."
 	@echo "## airflow			- Spinup airflow scheduler and webserver."
+	@echo "## kafka			- Spinup kafka cluster (Kafka+Zookeeper)."
 	@echo "## clean			- Cleanup all running containers related to the challenge."
 
 docker-build:
@@ -37,7 +38,7 @@ docker-build-arm:
 
 jupyter:
 	@echo '__________________________________________________________'
-	@echo 'Creating Jupyter Notebook Cluster at http://localhost:${JUPYTER_PORT}...'
+	@echo 'Creating Jupyter Notebook Cluster at http://localhost:${JUPYTER_PORT} ...'
 	@echo '__________________________________________________________'
 	@docker-compose -f ./docker/docker-compose-jupyter.yml --env-file .env up -d
 	@echo 'Created...'
@@ -101,6 +102,33 @@ postgres-ingest-csv:
 	@echo '_________________________________________'
 	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f sql/ingest-retail.sql
 	@echo '==========================================================='
+
+kafka: kafka-create
+
+kafka-create:
+	@echo '__________________________________________________________'
+	@echo 'Creating Kafka Cluster ...'
+	@echo '__________________________________________________________'
+	@docker-compose -f ./docker/docker-compose-kafka.yml --env-file .env up -d
+	@echo 'Waiting for uptime on http://localhost:8083 ...'
+	@sleep 20
+	@echo '==========================================================='
+
+kafka-create-test-topic:
+	@docker exec ${DE_KAFKA_CONTAINER_NAME} \
+		kafka-topics.sh --create \
+		--partitions 3 \
+		--replication-factor ${DE_KAFKA_REPLICATION} \
+		--bootstrap-server localhost:9092 \
+		--topic ${DE_KAFKA_TOPIC_NAME}
+
+kafka-create-topic:
+	@docker exec ${DE_KAFKA_CONTAINER_NAME} \
+		kafka-topics.sh --create \
+		--partitions ${partition} \
+		--replication-factor ${DE_KAFKA_REPLICATION} \
+		--bootstrap-server localhost:9092 \
+		--topic ${topic}
 
 clean:
 	@bash ./scripts/goodnight.sh

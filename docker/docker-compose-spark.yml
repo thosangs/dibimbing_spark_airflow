@@ -42,3 +42,4 @@ services:
 networks:
   default:
     name: dataeng-network
+    external: true
