@@ -3,8 +3,8 @@ version: '3.8'
 services:
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
-    container_name: ${DE_ZOOKEPER_CONTAINER_NAME}
-    hostname: ${DE_ZOOKEPER_HOST}
+    container_name: ${ZOOKEPER_CONTAINER_NAME}
+    hostname: ${ZOOKEPER_HOST}
     networks:
       - dataeng-network
     ports:
@@ -13,14 +13,14 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
     image: docker.io/bitnami/kafka:3.3
-    container_name: ${DE_KAFKA_CONTAINER_NAME}
-    hostname: ${DE_KAFKA_HOST}
+    container_name: ${KAFKA_CONTAINER_NAME}
+    hostname: ${KAFKA_HOST}
     networks:
       - dataeng-network
     ports:
       - "29092:9092"
     environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=${DE_ZOOKEPER_HOST}:2181
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=${ZOOKEPER_HOST}:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
@@ -37,8 +37,8 @@ services:
     restart: "no"
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=${DE_KAFKA_HOST}:9092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=${DE_ZOOKEPER_HOST}:2181
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=${KAFKA_HOST}:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=${ZOOKEPER_HOST}:2181
 
 networks:
   dataeng-network:

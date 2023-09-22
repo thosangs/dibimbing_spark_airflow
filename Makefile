@@ -115,20 +115,36 @@ kafka-create:
 	@echo '==========================================================='
 
 kafka-create-test-topic:
-	@docker exec ${DE_KAFKA_CONTAINER_NAME} \
+	@docker exec ${KAFKA_CONTAINER_NAME} \
 		kafka-topics.sh --create \
 		--partitions 3 \
-		--replication-factor ${DE_KAFKA_REPLICATION} \
+		--replication-factor ${KAFKA_REPLICATION} \
 		--bootstrap-server localhost:9092 \
-		--topic ${DE_KAFKA_TOPIC_NAME}
+		--topic ${KAFKA_TOPIC_NAME}
 
 kafka-create-topic:
-	@docker exec ${DE_KAFKA_CONTAINER_NAME} \
+	@docker exec ${KAFKA_CONTAINER_NAME} \
 		kafka-topics.sh --create \
 		--partitions ${partition} \
-		--replication-factor ${DE_KAFKA_REPLICATION} \
+		--replication-factor ${KAFKA_REPLICATION} \
 		--bootstrap-server localhost:9092 \
 		--topic ${topic}
+
+spark-produce:
+	@echo '__________________________________________________________'
+	@echo 'Producing fake events ...'
+	@echo '__________________________________________________________'
+	@docker exec ${SPARK_WORKER_CONTAINER_NAME}-1 \
+		python \
+		/scripts/event_producer.py \
+
+spark-consume:
+	@echo '__________________________________________________________'
+	@echo 'Producing fake events ...'
+	@echo '__________________________________________________________'
+	@docker exec ${SPARK_WORKER_CONTAINER_NAME}-1 \
+		spark-submit \
+		/spark-scripts/spark-event-consumer.py \
 
 clean:
 	@bash ./scripts/goodnight.sh

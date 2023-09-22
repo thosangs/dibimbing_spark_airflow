@@ -12,5 +12,8 @@ RUN curl https://repo1.maven.org/maven2/org/apache/commons/commons-pool2/2.11.1/
 RUN pip install \
     lxml \
     requests \
-    pandas
+    pandas \
+    python-dotenv==0.20.0 \
+    kafka-python==2.0.2 \
+    faker==18.9.0
 COPY ./.env /opt/app/.env

@@ -13,6 +13,7 @@ services:
       - SPARK_SSL_ENABLED=no
     volumes:
       - ../spark-scripts:/spark-scripts
+      - ../scripts:/scripts
     ports:
       - ${SPARK_MASTER_UI}:8080
       - ${SPARK_MASTER_PORT}:7077
@@ -32,6 +33,7 @@ services:
       - SPARK_SSL_ENABLED=no
     volumes:
       - ../spark-scripts:/spark-scripts
+      - ../scripts:/scripts
     depends_on:
       - dibimbing-dataeng-spark-master
 
