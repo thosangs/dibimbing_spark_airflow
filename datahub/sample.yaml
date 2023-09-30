@@ -1,0 +1,18 @@
+---
+source:
+  type: "postgres"
+  config:
+    host_port: localhost
+    database: postgres_db
+    username: user
+    password: password
+    include_tables: true
+    include_views: true
+    profiling:
+        enabled: false
+
+# see https://datahubproject.io/docs/metadata-ingestion/sink_docs/datahub for complete documentation
+sink:
+  type: "datahub-rest"
+  config:
+    server: "http://localhost:8082"

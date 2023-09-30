@@ -136,7 +136,7 @@ spark-produce:
 	@echo '__________________________________________________________'
 	@docker exec ${SPARK_WORKER_CONTAINER_NAME}-1 \
 		python \
-		/scripts/event_producer.py \
+		/scripts/event_producer.py
 
 spark-consume:
 	@echo '__________________________________________________________'
@@ -144,7 +144,21 @@ spark-consume:
 	@echo '__________________________________________________________'
 	@docker exec ${SPARK_WORKER_CONTAINER_NAME}-1 \
 		spark-submit \
-		/spark-scripts/spark-event-consumer.py \
+		/spark-scripts/spark-event-consumer.py
+
+datahub-createx:
+	@echo '__________________________________________________________'
+	@echo 'Creating Datahub Instance ...'
+	@echo '__________________________________________________________'
+	@docker-compose -f ./docker/docker-compose-datahub.yml --env-file .env up
+	@echo '==========================================================='
+
+datahub-ingest:
+	@echo '__________________________________________________________'
+	@echo 'Ingesting Data to Datahub ...'
+	@echo '__________________________________________________________'
+	@datahub ingest -c datahub/sample.yaml --dry-run
+	@echo '==========================================================='
 
 clean:
 	@bash ./scripts/goodnight.sh
