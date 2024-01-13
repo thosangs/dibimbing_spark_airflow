@@ -8,6 +8,8 @@ help:
 	@echo "## jupyter			- Spinup jupyter notebook for testing and validation purposes."
 	@echo "## airflow			- Spinup airflow scheduler and webserver."
 	@echo "## kafka			- Spinup kafka cluster (Kafka+Zookeeper)."
+	@echo "## datahub			- Spinup datahub instances."
+	@echo "## metabase			- Spinup metabase instance."
 	@echo "## clean			- Cleanup all running containers related to the challenge."
 
 docker-build:
@@ -75,7 +77,7 @@ airflow:
 	@docker-compose -f ./docker/docker-compose-airflow.yml --env-file .env up
 	@echo '==========================================================='
 
-postgres: postgres-create postgres-create-table postgres-ingest-csv
+postgres: postgres-create postgres-create-warehouse postgres-create-table postgres-ingest-csv
 
 postgres-create:
 	@docker-compose -f ./docker/docker-compose-postgres.yml --env-file .env up -d
@@ -85,7 +87,7 @@ postgres-create:
 	@echo 'Postgres Docker Host	: ${POSTGRES_CONTAINER_NAME}' &&\
 		echo 'Postgres Account	: ${POSTGRES_USER}' &&\
 		echo 'Postgres password	: ${POSTGRES_PASSWORD}' &&\
-		echo 'Postgres Db		: ${POSTGRES_DB}'
+		echo 'Postgres Db		: warehouse'
 	@sleep 5
 	@echo '==========================================================='
 
@@ -93,14 +95,21 @@ postgres-create-table:
 	@echo '__________________________________________________________'
 	@echo 'Creating tables...'
 	@echo '_________________________________________'
-	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f sql/ddl-retail.sql
+	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d warehouse -f sql/ddl-retail.sql
 	@echo '==========================================================='
 
 postgres-ingest-csv:
 	@echo '__________________________________________________________'
 	@echo 'Ingesting CSV...'
 	@echo '_________________________________________'
-	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f sql/ingest-retail.sql
+	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d warehouse -f sql/ingest-retail.sql
+	@echo '==========================================================='
+
+postgres-create-warehouse:
+	@echo '__________________________________________________________'
+	@echo 'Creating Warehouse DB...'
+	@echo '_________________________________________'
+	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f sql/warehouse-ddl.sql
 	@echo '==========================================================='
 
 kafka: kafka-create
@@ -158,6 +167,13 @@ datahub-ingest:
 	@echo 'Ingesting Data to Datahub ...'
 	@echo '__________________________________________________________'
 	@datahub ingest -c datahub/sample.yaml --dry-run
+	@echo '==========================================================='
+
+metabase: postgres-create-warehouse
+	@echo '__________________________________________________________'
+	@echo 'Creating Metabase Instance ...'
+	@echo '__________________________________________________________'
+	@docker-compose -f ./docker/docker-compose-metabase.yml --env-file .env up
 	@echo '==========================================================='
 
 clean:
