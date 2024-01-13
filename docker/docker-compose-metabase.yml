@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+  metabase:
+    image: metabase/metabase:v0.47.3
+    container_name: ${METABASE_CONTAINER_NAME}
+    ports:
+      - "${METABASE_PORT}:3000"
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=${POSTGRES_DB}
+      - MB_DB_HOST=${POSTGRES_CONTAINER_NAME}
+      - MB_DB_USER=${POSTGRES_USER}
+      - MB_DB_PASS=${POSTGRES_PASSWORD}
+      - MB_DB_PORT=5432
+    restart: always
+  
+  metabase-setup:
+    image: bash:5.1.16
+    container_name: metabase-setup
+    volumes:
+      - ../scripts:/tmp
+    depends_on:
+      - metabase
+    environment:
+      - DW_POSTGRES_USER=${POSTGRES_USER}
+      - DW_POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DW_POSTGRES_DB=warehouse
+      - DW_POSTGRES_CONTAINER_NAME=${POSTGRES_CONTAINER_NAME}
+      - DW_POSTGRES_PORT=5432
+      - MB_USER_EMAIL=${METABASE_USER_EMAIL}
+      - MB_USER_PASSWORD=${METABASE_USER_PASSWORD}
+      - MB_USER_FIRST_NAME=${METABASE_USER_FIRST_NAME}
+      - MB_USER_LAST_NAME=${METABASE_USER_LAST_NAME}
+    command: sh /tmp/metabase_entrypoint.sh ${METABASE_CONTAINER_NAME}:3000
+
+networks:
+  default:
+    name: dataeng-network
+    external: true
