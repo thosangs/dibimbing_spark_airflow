@@ -178,3 +178,7 @@ metabase: postgres-create-warehouse
 
 clean:
 	@bash ./scripts/goodnight.sh
+
+
+postgres-bash:
+	@docker exec -it dataeng-postgres bash

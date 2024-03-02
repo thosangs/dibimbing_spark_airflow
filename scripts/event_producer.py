@@ -52,4 +52,4 @@ while True:
     response = producer.send(topic=kafka_topic, value=_payload)
     print(response.get())
     print("=-" * 20, flush=True)
-    sleep(6)
+    sleep(3)
