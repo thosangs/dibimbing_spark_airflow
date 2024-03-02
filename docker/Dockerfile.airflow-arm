@@ -1,15 +1,15 @@
-FROM apache/airflow:2.7.1-python3.9@sha256:fadcd177ae17f604f587aa8761bbd398685e00d379a2da7eab1c4ca4cb476f49
+FROM apache/airflow:2.8.2-python3.9@sha256:13b339a1c68dab4d887de009d95aafd2b3e907c98f65a81181bc2f84cbe8ab36
 USER root
 
 # Install OpenJDK-11
 RUN apt update && \
-    apt-get install -y openjdk-11-jdk && \
+    apt-get install -y openjdk-17-jdk && \
     apt-get install -y ant && \
     apt-get install -y procps && \
     apt-get clean;
 
 # Set JAVA_HOME
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-arm64
+ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-arm64
 RUN export JAVA_HOME
 
 USER airflow
