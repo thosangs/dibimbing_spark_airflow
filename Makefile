@@ -102,7 +102,7 @@ postgres-ingest-csv:
 	@echo '__________________________________________________________'
 	@echo 'Ingesting CSV...'
 	@echo '_________________________________________'
-	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d warehouse -f sql/ingest-retail.sql
+	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d ${POSTGRES_DW_DB} -f sql/ingest-retail.sql
 	@echo '==========================================================='
 
 postgres-create-warehouse:
@@ -149,13 +149,13 @@ spark-produce:
 
 spark-consume:
 	@echo '__________________________________________________________'
-	@echo 'Producing fake events ...'
+	@echo 'Consuming fake events ...'
 	@echo '__________________________________________________________'
 	@docker exec ${SPARK_WORKER_CONTAINER_NAME}-1 \
 		spark-submit \
 		/spark-scripts/spark-event-consumer.py
 
-datahub-createx:
+datahub-create:
 	@echo '__________________________________________________________'
 	@echo 'Creating Datahub Instance ...'
 	@echo '__________________________________________________________'
@@ -166,7 +166,7 @@ datahub-ingest:
 	@echo '__________________________________________________________'
 	@echo 'Ingesting Data to Datahub ...'
 	@echo '__________________________________________________________'
-	@datahub ingest -c datahub/sample.yaml --dry-run
+	@datahub ingest -c ./datahub/sample.yaml --dry-run
 	@echo '==========================================================='
 
 metabase: postgres-create-warehouse
