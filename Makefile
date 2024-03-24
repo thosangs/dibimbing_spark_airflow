@@ -87,7 +87,7 @@ postgres-create:
 	@echo 'Postgres Docker Host	: ${POSTGRES_CONTAINER_NAME}' &&\
 		echo 'Postgres Account	: ${POSTGRES_USER}' &&\
 		echo 'Postgres password	: ${POSTGRES_PASSWORD}' &&\
-		echo 'Postgres Db		: warehouse'
+		echo 'Postgres Db		: ${POSTGRES_DW_DB}'
 	@sleep 5
 	@echo '==========================================================='
 
