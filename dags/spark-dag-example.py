@@ -19,7 +19,7 @@ spark_dag = DAG(
 
 Extract = SparkSubmitOperator(
     application="/spark-scripts/spark-example.py",
-    conn_id="spark_tgs",
+    conn_id="spark_main",
     task_id="spark_submit_task",
     dag=spark_dag,
 )
