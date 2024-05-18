@@ -1,4 +1,4 @@
-FROM apache/airflow:2.8.2-python3.9@sha256:13b339a1c68dab4d887de009d95aafd2b3e907c98f65a81181bc2f84cbe8ab36
+FROM apache/airflow:2.9.1-python3.9
 USER root
 
 # Install OpenJDK-11

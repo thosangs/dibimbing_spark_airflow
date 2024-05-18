@@ -16,6 +16,7 @@ docker-build:
 	@echo '__________________________________________________________'
 	@echo 'Building Docker Images ...'
 	@echo '__________________________________________________________'
+	@chmod 777 logs/
 	@docker network inspect dataeng-network >/dev/null 2>&1 || docker network create dataeng-network
 	@echo '__________________________________________________________'
 	@docker build -t dataeng-dibimbing/spark -f ./docker/Dockerfile.spark .
