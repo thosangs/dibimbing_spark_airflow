@@ -22,6 +22,7 @@ Extract = SparkSubmitOperator(
     conn_id="spark_main",
     task_id="spark_submit_task",
     dag=spark_dag,
+    packages="org.postgresql:postgresql:42.2.18",
 )
 
 Extract
