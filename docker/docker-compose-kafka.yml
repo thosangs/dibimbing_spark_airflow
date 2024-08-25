@@ -1,36 +1,49 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  kafka:
-    image: docker.io/bitnami/kafka:3.3
-    container_name: ${KAFKA_CONTAINER_NAME}
-    hostname: ${KAFKA_HOST}
-    ports:
-      - "29092:9092"
-    environment:
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_ENABLE_KRAFT=yes
-      - KAFKA_CFG_PROCESS_ROLES=broker,controller
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9094
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_BROKER_ID=1
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@${KAFKA_HOST}:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST}:9092
-      - KAFKA_CFG_NODE_ID=1
-  kafka-ui:
-    image: provectuslabs/kafka-ui:v0.7.0
-    container_name: kafka-ui
-    depends_on:
-      - kafka
-    ports:
-      - "8083:8080"
-    restart: "no"
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=${KAFKA_HOST}:9092
+ kafka:
+  image: docker.io/bitnami/kafka:3.3
+  container_name: ${KAFKA_CONTAINER_NAME}
+  hostname: ${KAFKA_HOST}
+  ports:
+   - "29092:9092"
+  environment:
+   - ALLOW_PLAINTEXT_LISTENER=yes
+   - KAFKA_ENABLE_KRAFT=yes
+   - KAFKA_CFG_PROCESS_ROLES=broker,controller
+   - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+   - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9094
+   - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+   - KAFKA_CFG_BROKER_ID=1
+   - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@${KAFKA_HOST}:9094
+   - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST}:9092
+   - KAFKA_CFG_NODE_ID=1
+ ksqldb:
+  image: "bitnami/ksql:7.4"
+  container_name: ${KSQL_CONTAINER_NAME}
+  hostname: ${KSQL_HOST}
+  depends_on:
+   - kafka
+  ports:
+   - "8088:8088"
+  environment:
+   - KSQL_BOOTSTRAP_SERVERS=${KAFKA_HOST}:9092
+   - KSQL_CLIENT_AUTHENTICATION=none
+ kafka-ui:
+  image: provectuslabs/kafka-ui:v0.7.0
+  container_name: kafka-ui
+  depends_on:
+   - kafka
+   - ksqldb
+  ports:
+   - "8083:8080"
+  restart: "no"
+  environment:
+   - KAFKA_CLUSTERS_0_NAME=local
+   - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=${KAFKA_HOST}:9092
+   - KAFKA_CLUSTERS_0_KSQLDBSERVER=http://${KSQL_HOST}:8088
 
 networks:
-  default:
-    name: dataeng-network
-    external: true
+ default:
+  name: dataeng-network
+  external: true
