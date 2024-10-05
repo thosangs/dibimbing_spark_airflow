@@ -55,6 +55,28 @@ parsed_df = stream_df.selectExpr("CAST(value AS STRING)").select(from_json(col("
 avg_price_df = parsed_df.groupBy("furniture").agg(avg("price").alias("avg_price"))
 
 # Write the result to the console
-query = avg_price_df.writeStream.outputMode("complete").format("console").trigger(processingTime="10 seconds").start()
+query = avg_price_df.writeStream.outputMode("update").format("console").trigger(processingTime="10 seconds").start()
 
 query.awaitTermination()
+
+# Batch 1
+# chair 10
+# desk 10
+# bed 20
+# chair 20
+
+# Avg
+# Chair 15
+# desk 10
+# bed 20
+
+# Batch 2
+# chair 30
+
+# Avg Complete
+# Chair 20
+# desk 10
+# bed 20
+
+# Avg Update
+# Chair 20

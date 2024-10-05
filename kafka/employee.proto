@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+message Employee {
+    string emp_id = 1;
+    string employee_name = 2;
+    string department = 3;
+    string state = 4;
+    int32 salary = 5;
+    int32 age = 6;
+    int32 bonus = 7;
+    int64 ts = 8;
+    bool new = 9;
+}
