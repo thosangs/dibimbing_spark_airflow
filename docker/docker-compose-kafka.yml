@@ -17,17 +17,17 @@ services:
    - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST}:9092
    - KAFKA_CFG_NODE_ID=1
 
- #  ksqldb:
- #   image: "bitnami/ksql:7.4"
- #   container_name: ${KSQL_CONTAINER_NAME}
- #   hostname: ${KSQL_HOST}
- #   depends_on:
- #    - kafka
- #   ports:
- #    - "8088:8088"
- #   environment:
- #    - KSQL_BOOTSTRAP_SERVERS=${KAFKA_HOST}:9092
- #    - KSQL_CLIENT_AUTHENTICATION=none
+ ksqldb:
+  image: "bitnami/ksql:7.4"
+  container_name: ${KSQL_CONTAINER_NAME}
+  hostname: ${KSQL_HOST}
+  depends_on:
+   - kafka
+  ports:
+   - "8088:8088"
+  environment:
+   - KSQL_BOOTSTRAP_SERVERS=${KAFKA_HOST}:9092
+   - KSQL_CLIENT_AUTHENTICATION=none
 
  kafka-ui:
   image: provectuslabs/kafka-ui:v0.7.0
