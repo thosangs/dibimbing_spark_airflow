@@ -18,6 +18,9 @@ docker-build-slim:
 	@docker network inspect dataeng-network >/dev/null 2>&1 || docker network create dataeng-network
 	@docker build -t dataeng-dibimbing/jupyter -f ./docker/Dockerfile.jupyter .
 
+docker-build-slim-windows:
+	@docker build -t dataeng-dibimbing/jupyter -f ./docker/Dockerfile.jupyter .
+
 docker-build:
 	@echo '__________________________________________________________'
 	@echo 'Building Docker Images ...'
