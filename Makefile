@@ -36,6 +36,18 @@ docker-build:
 	@docker build -t dataeng-dibimbing/jupyter -f ./docker/Dockerfile.jupyter .
 	@echo '==========================================================='
 
+docker-build-windows:
+	@echo '__________________________________________________________'
+	@echo 'Building Docker Images ...'
+	@echo '__________________________________________________________'
+	@docker build -t dataeng-dibimbing/spark -f ./docker/Dockerfile.spark .
+	@echo '__________________________________________________________'
+	@docker build -t dataeng-dibimbing/airflow -f ./docker/Dockerfile.airflow .
+	@echo '__________________________________________________________'
+	@docker build -t dataeng-dibimbing/jupyter -f ./docker/Dockerfile.jupyter .
+	@echo '==========================================================='
+
+
 docker-build-arm:
 	@echo '__________________________________________________________'
 	@echo 'Building Docker Images ...'
