@@ -132,7 +132,7 @@ postgres-create-warehouse:
 	@echo '__________________________________________________________'
 	@echo 'Creating Warehouse DB...'
 	@echo '_________________________________________'
-	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d ${POSTGRES_DW_DB} -f sql/warehouse-ddl.sql
+	@docker exec -it ${POSTGRES_CONTAINER_NAME} psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f sql/warehouse-ddl.sql
 	@echo '==========================================================='
 
 kafka: kafka-create
