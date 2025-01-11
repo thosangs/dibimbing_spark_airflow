@@ -9,12 +9,12 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 dotenv_path = Path("/opt/app/.env")
 load_dotenv(dotenv_path=dotenv_path)
 
-spark_hostname = os.getenv("SPARK_MASTER_HOST_NAME")
+# spark_hostname = os.getenv("SPARK_MASTER_HOST_NAME")
 spark_port = os.getenv("SPARK_MASTER_PORT")
 kafka_host = os.getenv("KAFKA_HOST")
 kafka_topic = os.getenv("KAFKA_TOPIC_NAME")
 
-spark_host = f"spark://{spark_hostname}:{spark_port}"
+# spark_host = f"spark://{spark_hostname}:{spark_port}"
 
 os.environ["PYSPARK_SUBMIT_ARGS"] = (
     "--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2 org.postgresql:postgresql:42.2.18"
@@ -22,10 +22,11 @@ os.environ["PYSPARK_SUBMIT_ARGS"] = (
 
 spark = (
     pyspark.sql.SparkSession.builder.appName("DibimbingStreaming")
-    .master(spark_host)
+    # .master(spark_host)
+    .master("local")
     .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0")
     .config("spark.sql.shuffle.partitions", 4)
-    .config("spark.sql.streaming.forceDeleteTempCheckpointLocation", True)
+    # .config("spark.sql.streaming.forceDeleteTempCheckpointLocation", True)
     .getOrCreate()
 )
 
@@ -58,25 +59,3 @@ avg_price_df = parsed_df.groupBy("furniture").agg(avg("price").alias("avg_price"
 query = avg_price_df.writeStream.outputMode("update").format("console").trigger(processingTime="10 seconds").start()
 
 query.awaitTermination()
-
-# Batch 1
-# chair 10
-# desk 10
-# bed 20
-# chair 20
-
-# Avg
-# Chair 15
-# desk 10
-# bed 20
-
-# Batch 2
-# chair 30
-
-# Avg Complete
-# Chair 20
-# desk 10
-# bed 20
-
-# Avg Update
-# Chair 20
