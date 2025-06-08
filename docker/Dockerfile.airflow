@@ -1,4 +1,4 @@
-FROM apache/airflow:2.8.2-python3.9
+FROM apache/airflow:2.9.1-python3.9
 USER root
 
 # Install OpenJDK-11
@@ -15,12 +15,9 @@ RUN export JAVA_HOME
 USER airflow
 
 RUN pip install \
-    lxml \
     pyspark==3.3.2 \
     apache-airflow-providers-apache-spark==5.0.0 \
     requests==2.31 \
-    pandas==1.2.4 \
-    apache-airflow-providers-slack==8.4.0 \
-    apache-airflow-providers-openlineage==1.8.0
+    pandas==1.2.4
 
 COPY --chown=airflow:root ./dags /opt/airflow/dags
