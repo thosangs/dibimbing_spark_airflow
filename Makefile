@@ -205,3 +205,93 @@ clean:
 
 postgres-bash:
 	@docker exec -it dataeng-postgres bash
+
+## =================================================================================================
+## SPARK STREAMING PRACTICE
+## =================================================================================================
+#
+# Usage:
+#   make run-producer P=<practice_number>
+#   make run-consumer P=<practice_number>
+#
+# Example:
+#   make run-producer P=1
+#   make run-consumer P=1
+#
+# To run the model training for practice 8:
+#   make run-practice-8-train
+#
+# -------------------------------------------------------------------------------------------------
+
+# Default to Practice 1 if P is not set
+P ?= 1
+
+# --- Practice Configurations ---
+# For each practice, define the directory, producer script, consumer script, and any extra packages.
+# Note: For P1 producer, we use a special command.
+P_1_DIR := 01_trigger_output_mode
+P_1_PRODUCER_CMD := @echo "Running producer for Practice 1: Trigger and Output Mode..."; docker exec -it ${SPARK_MASTER_CONTAINER_NAME} python /streaming-practice/$(P_1_DIR)/producer_web_logs.py
+P_1_CONSUMER_SCRIPT := consumer_trigger_output.py
+P_1_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0
+
+P_2_DIR := 02_stateless_filtering
+P_2_PRODUCER_SCRIPT := producer_security_logs.py
+P_2_CONSUMER_SCRIPT := consumer_stateless_filter.py
+P_2_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0
+
+P_3_DIR := 03_stateful_aggregation
+P_3_PRODUCER_SCRIPT := producer_payments.py
+P_3_CONSUMER_SCRIPT := consumer_fraud_detection.py
+P_3_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0
+
+P_4_DIR := 04_checkpoint_fault_tolerance
+P_4_PRODUCER_SCRIPT := producer_sales.py
+P_4_CONSUMER_SCRIPT := consumer_sales_etl.py
+P_4_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0
+
+P_5_DIR := 05_windowing_watermark
+P_5_PRODUCER_SCRIPT := producer_page_events.py
+P_5_CONSUMER_SCRIPT := consumer_page_views.py
+P_5_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0
+
+P_6_DIR := 06_stream_static_join
+P_6_PRODUCER_SCRIPT := producer_clickstream.py
+P_6_CONSUMER_SCRIPT := consumer_recommendations.py
+P_6_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0
+
+P_7_DIR := 07_stream_stream_join
+P_7_PRODUCER_SCRIPT := producer_orders_and_payments.py
+P_7_CONSUMER_SCRIPT := consumer_order_fulfillment.py
+P_7_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0
+
+P_8_DIR := 08_streaming_ml_fraud
+P_8_PRODUCER_SCRIPT := producer_live_transactions.py
+P_8_CONSUMER_SCRIPT := consumer_fraud_prediction.py
+P_8_TRAIN_SCRIPT := train_model.py
+P_8_PACKAGES := org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.apache.spark:spark-mllib_2.12:3.5.0
+
+# --- Generic Targets ---
+# These targets use variable indirection to get the configuration for the selected practice (P).
+P_DIR := $(P_$(P)_DIR)
+P_PRODUCER_SCRIPT := $(P_$(P)_PRODUCER_SCRIPT)
+P_CONSUMER_SCRIPT := $(P_$(P)_CONSUMER_SCRIPT)
+P_PACKAGES := $(P_$(P)_PACKAGES)
+
+run-producer:
+	@if [ "$(P)" = "1" ]; then \
+		$(P_1_PRODUCER_CMD); \
+	else \
+		echo "Running producer for Practice $(P)..."; \
+		docker exec -it ${SPARK_MASTER_CONTAINER_NAME} python /streaming-practice/$(P_DIR)/$(P_PRODUCER_SCRIPT); \
+	fi
+
+run-consumer:
+	@echo "Running consumer for Practice $(P)..."
+	docker exec -it ${SPARK_MASTER_CONTAINER_NAME} spark-submit \
+		--packages $(P_PACKAGES) \
+		/streaming-practice/$(P_DIR)/$(P_CONSUMER_SCRIPT)
+
+# --- Special Targets ---
+run-practice-8-train:
+	@echo "Training ML model for Practice 8..."
+	docker exec -it ${SPARK_MASTER_CONTAINER_NAME} spark-submit /streaming-practice/$(P_8_DIR)/$(P_8_TRAIN_SCRIPT)

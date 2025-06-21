@@ -3,7 +3,8 @@ USER root
 
 RUN apt-get update && apt-get install -y \
     curl \
-    netcat-openbsd
+    netcat-openbsd \
+    nmap
 RUN pip install \
     python-dotenv==0.20.0 \
     kafka-python==2.0.2 \
