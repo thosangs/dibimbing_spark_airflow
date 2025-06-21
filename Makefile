@@ -282,16 +282,16 @@ run-producer:
 		$(P_1_PRODUCER_CMD); \
 	else \
 		echo "Running producer for Practice $(P)..."; \
-		docker exec -it ${SPARK_MASTER_CONTAINER_NAME} python /streaming-practice/$(P_DIR)/$(P_PRODUCER_SCRIPT); \
+		docker exec -it ${SPARK_MASTER_CONTAINER_NAME} python streaming-practice/$(P_DIR)/$(P_PRODUCER_SCRIPT); \
 	fi
 
 run-consumer:
 	@echo "Running consumer for Practice $(P)..."
 	docker exec -it ${SPARK_MASTER_CONTAINER_NAME} spark-submit \
 		--packages $(P_PACKAGES) \
-		/streaming-practice/$(P_DIR)/$(P_CONSUMER_SCRIPT)
+		streaming-practice/$(P_DIR)/$(P_CONSUMER_SCRIPT)
 
 # --- Special Targets ---
 run-practice-8-train:
 	@echo "Training ML model for Practice 8..."
-	docker exec -it ${SPARK_MASTER_CONTAINER_NAME} spark-submit /streaming-practice/$(P_8_DIR)/$(P_8_TRAIN_SCRIPT)
+	docker exec -it ${SPARK_MASTER_CONTAINER_NAME} spark-submit streaming-practice/$(P_8_DIR)/$(P_8_TRAIN_SCRIPT)
